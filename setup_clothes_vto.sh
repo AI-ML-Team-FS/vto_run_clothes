@@ -27,12 +27,11 @@ wget -P ./ckpt/openpose/ckpts/ https://huggingface.co/lllyasviel/ControlNet/reso
 
 echo "Model downloads completed."
 
-# Step 4: Set up yisol folder and clone repository
+# Step 4: Set up yisol folder and clone the repository, assuming git-lfs is already installed
 mkdir yisol
 cd yisol
 
-echo "Installing Git LFS and cloning Hugging Face repository..."
-apt-get install lfs
+echo "Cloning the Hugging Face repository..."
 git lfs install
 git clone https://huggingface.co/yisol/IDM-VTON
 
