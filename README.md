@@ -5,7 +5,7 @@
    - python3 -m venv venv
    - source venv/bin/actiavte
 2. Clone the github repo:
-   - https://github.com/nishi-v/vto_run_clothes.git
+   - git clone https://github.com/nishi-v/vto_run_clothes.git
 3. Go to vto_run_clothes directory
    - cd vto_run_clothes
 4. Run the bash file.
