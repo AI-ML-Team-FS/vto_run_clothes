@@ -1,5 +1,8 @@
 #!/bin/bash
-
+# First installing lfs 
+echo "Installing Git LFS..."
+apt-get update
+apt-get install -y git-lfs
 # Script to set up and run the IDM-VTON project
 
 # Step 1: Clone the public repository
