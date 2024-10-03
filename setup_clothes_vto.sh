@@ -1,20 +1,19 @@
 #!/bin/bash
-# First installing lfs 
+# Step 1: First installing lfs 
 echo "Installing Git LFS..."
 apt-get update
 apt-get install -y git-lfs
-# Script to set up and run the IDM-VTON project
 
-# Step 1: Clone the public repository
+# Step 2: Clone the public repository
 echo "Cloning the public repository..."
 git clone https://github.com/nishi-v/clothes_virtual_tryon.git
 cd clothes_virtual_tryon || { echo "Failed to enter clothes_virtual_tryon directory."; exit 1; }
 
-# Step 2: Install Python dependencies from requirements.txt in the clothes_virtual_tryon folder
+# Step 3: Install Python dependencies from requirements.txt in the clothes_virtual_tryon folder
 echo "Installing Python dependencies..."
 pip install -r requirements.txt
 
-# Step 3: Enter IDM-VTON directory and download required models
+# Step 4: Enter IDM-VTON directory and download required models
 echo "Entering IDM-VTON directory and downloading required models..."
 cd IDM-VTON || { echo "Failed to enter IDM-VTON directory."; exit 1; }
 
@@ -30,7 +29,7 @@ wget -P ./ckpt/openpose/ckpts/ https://huggingface.co/lllyasviel/ControlNet/reso
 
 echo "Model downloads completed."
 
-# Step 4: Set up yisol folder and clone the repository, assuming git-lfs is already installed
+# Step 5: Set up yisol folder and clone the repository, assuming git-lfs is already installed
 mkdir yisol
 cd yisol
 
@@ -38,7 +37,7 @@ echo "Cloning the Hugging Face repository..."
 git lfs install
 git clone https://huggingface.co/yisol/IDM-VTON
 
-# Step 5: Run the Gradio demo
+# Step 6: Run the Gradio demo
 cd ..
 echo "Running the Gradio demo..."
 python3 gradio_demo/app.py
