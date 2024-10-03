@@ -27,34 +27,15 @@ wget -P ./ckpt/openpose/ckpts/ https://huggingface.co/lllyasviel/ControlNet/reso
 
 echo "Model downloads completed."
 
-# Step 4: Install Git LFS in home directory
-echo "Installing Git LFS..."
-wget https://github.com/git-lfs/git-lfs/releases/latest/download/git-lfs-linux-amd64.tar.gz
-tar -xvzf git-lfs-linux-amd64.tar.gz
-cd git-lfs-*
-
-# Move Git LFS to a directory in your home (e.g., ~/.local/bin)
-mkdir -p ~/.local/bin
-mv git-lfs ~/.local/bin/
-chmod +x ~/.local/bin/git-lfs
-
-# Clean up
-cd ..
-rm -rf git-lfs-* git-lfs-linux-amd64.tar.gz
-
-# Step 5: Set up yisol folder and clone the repository
+# Step 4: Set up yisol folder and clone the repository, assuming git-lfs is already installed
 mkdir yisol
 cd yisol
 
 echo "Cloning the Hugging Face repository..."
-~/.local/bin/git-lfs install
+git lfs install
 git clone https://huggingface.co/yisol/IDM-VTON
 
-# Step 6: Pull LFS content
-cd IDM-VTON
-~/.local/bin/git-lfs pull
-
-# Step 7: Run the Gradio demo
+# Step 5: Run the Gradio demo
 cd ..
 echo "Running the Gradio demo..."
 python3 gradio_demo/app.py
