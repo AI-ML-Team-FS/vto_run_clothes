@@ -1,26 +1,25 @@
-# Use a base image with Python 3.10
-FROM python:3.10-slim AS builder
+from python:3.10-slim AS builder
 
-# Set the working directory inside the container
-WORKDIR workspace/vto_run_clothes
+# Set the working directory
+WORKDIR /workspace/vto_run_clothes
 
-# Install system dependencies and Git LFS
+# Install required packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends wget git git-lfs && \
     rm -rf /var/lib/apt/lists/*
 
-# Increase Git buffer size
+# Configure git
 RUN git config --global http.postBuffer 1048576000
 
-# Clone the repository from the main branch with a shallow clone
+# Clone the repository
 RUN git clone --branch main --depth 1 https://github.com/nishi-v/clothes_virtual_tryon.git
 
-# Change directory to the cloned repo
-WORKDIR workspace/vto_run_clothes/clothes_virtual_tryon
+# Set the working directory to the cloned repository
+WORKDIR /workspace/vto_run_clothes/clothes_virtual_tryon
 
 # Install Python dependencies from the cloned repository's requirements.txt
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.tx
+    pip install --no-cache-dir -r requirements.txt
 
 # Download models for DensePose, Human Parsing, and OpenPose
 RUN mkdir -p IDM-VTON/ckpt/densepose IDM-VTON/ckpt/humanparsing IDM-VTON/ckpt/openpose/ckpts && \
