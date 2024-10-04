@@ -37,7 +37,7 @@ echo "Cloning the Hugging Face repository..."
 git lfs install
 git clone https://huggingface.co/yisol/IDM-VTON
 
-# Step 6: Run the Gradio demo
-cd ..
-echo "Running the Gradio demo..."
-python3 gradio_demo/app.py
+# # Step 6: Run the Gradio demo
+# cd ..
+# echo "Running the Gradio demo..."
+# python3 gradio_demo/app.py
