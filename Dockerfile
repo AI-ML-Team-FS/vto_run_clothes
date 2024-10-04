@@ -2,7 +2,7 @@
 FROM python:3.10-slim as builder
 
 # Set the working directory inside the container
-WORKDIR /vto_run_clothes
+WORKDIR workspace/vto_run_clothes
 
 # Install system dependencies and Git LFS
 RUN apt-get update && \
@@ -16,7 +16,7 @@ RUN git config --global http.postBuffer 1048576000
 RUN git clone --branch main --depth 1 https://github.com/nishi-v/clothes_virtual_tryon.git
 
 # Change directory to the cloned repo
-WORKDIR /vto_run_clothes/clothes_virtual_tryon
+WORKDIR workspace/vto_run_clothes/clothes_virtual_tryon
 
 # Install Python dependencies from the cloned repository's requirements.txt
 RUN pip install --upgrade pip && \
@@ -42,7 +42,7 @@ FROM python:3.10-slim
 COPY --from=builder /vto_run_clothes/clothes_virtual_tryon /vto_run_clothes/clothes_virtual_tryon
 
 # Change working directory to the IDM-VTON folder to run the Gradio demo
-WORKDIR /vto_run_clothes/clothes_virtual_tryon/IDM-VTON
+WORKDIR workspace/vto_run_clothes/clothes_virtual_tryon/IDM-VTON
 
 # Expose port 7860 for Gradio
 EXPOSE 7860
