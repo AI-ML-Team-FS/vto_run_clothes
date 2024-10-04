@@ -1,6 +1,6 @@
-from python:3.10-slim AS builder
+FROM python:3.10-slim AS builder
 
-# Set the working directory
+# Set the working director
 WORKDIR /workspace/vto_run_clothes
 
 # Install required packages
