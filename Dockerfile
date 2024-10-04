@@ -1,5 +1,5 @@
 # Use a base image with Python 3.10
-FROM python:3.10-slim as builder
+FROM python:3.10-slim AS builder
 
 # Set the working directory inside the container
 WORKDIR workspace/vto_run_clothes
@@ -20,7 +20,7 @@ WORKDIR workspace/vto_run_clothes/clothes_virtual_tryon
 
 # Install Python dependencies from the cloned repository's requirements.txt
 RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+    pip install --no-cache-dir -r requirements.tx
 
 # Download models for DensePose, Human Parsing, and OpenPose
 RUN mkdir -p IDM-VTON/ckpt/densepose IDM-VTON/ckpt/humanparsing IDM-VTON/ckpt/openpose/ckpts && \
