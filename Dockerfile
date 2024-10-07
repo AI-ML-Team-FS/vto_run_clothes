@@ -8,7 +8,7 @@ COPY runpod.yaml /teamspace/studios/this_studio/vto_run_clothes/runpod.yaml
 
 # Install required packages, including nginx and openssh-server
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends wget git git-lfs nginx openssh-server && \
+    apt-get install -y --no-install-recommends wget git git-lfs nginx openssh-server libgl1-mesa-glx libglib2.0-0 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Configure git
