@@ -1,0 +1,8 @@
+version: '1.0.0'
+services:
+  - name: 'gradio-service'
+    port: 8000
+    proxy_port: 8001
+  - name: 'nginx'
+    port: 80
+    proxy_port: 8080

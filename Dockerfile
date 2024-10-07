@@ -1,21 +1,24 @@
 FROM python:3.10-slim
 
-# Set the working director
-WORKDIR /vto_run_clothes
+# Set the working directory
+WORKDIR /teamspace/studios/this_studio/vto_run_clothes
 
-# Install required packages
+# Copy runpod.yaml
+COPY runpod.yaml /teamspace/studios/this_studio/vto_run_clothes/runpod.yaml
+
+# Install required packages, including nginx and openssh-server
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends wget git git-lfs && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends wget git git-lfs nginx openssh-server && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Configure git
 RUN git config --global http.postBuffer 1048576000
 
 # Clone the repository
-RUN git clone --branch main --depth 1 https://github.com/nishi-v/clothes_virtual_tryon.git
+RUN git clone --branch main --depth 1 https://github.com/AI-ML-Team-FS/clothes_virtual_tryon.git
 
 # Set the working directory to the cloned repository
-WORKDIR /vto_run_clothes/clothes_virtual_tryon
+WORKDIR /teamspace/studios/this_studio/vto_run_clothes/clothes_virtual_tryon
 
 # Install Python dependencies from the cloned repository's requirements.txt
 RUN pip install --upgrade pip && \
@@ -35,10 +38,10 @@ RUN git lfs install && \
     git clone https://huggingface.co/yisol/IDM-VTON
 
 # Change working directory to the IDM-VTON folder to run the Gradio demo
-WORKDIR /vto_run_clothes/clothes_virtual_tryon/IDM-VTON
+WORKDIR /teamspace/studios/this_studio/vto_run_clothes/clothes_virtual_tryon/IDM-VTON
 
-# Expose port 7860 for Gradio
-EXPOSE 7860
+# Expose port 8000 for Gradio
+EXPOSE 8000
 
-# Run the Gradio demo from the IDM-VTON folder
-CMD ["python3", "gradio_demo/app.py"]
+# Start Nginx and the Gradio demo
+CMD service nginx start && exec python3 gradio_demo/app.py
