@@ -3,8 +3,9 @@ FROM python:3.10-slim
 # Set the working directory
 WORKDIR /teamspace/studios/this_studio/vto_run_clothes
 
-# Copy runpod.yaml
+# Copy runpod.yaml and nginx.conf
 COPY runpod.yaml /teamspace/studios/this_studio/vto_run_clothes/runpod.yaml
+COPY nginx.conf /teamspace/studios/this_studio/vto_run_clothes/nginx.conf
 
 # Install required packages, including nginx and openssh-server
 RUN apt-get update && \
@@ -40,8 +41,8 @@ RUN git lfs install && \
 # Change working directory to the IDM-VTON folder to run the Gradio demo
 WORKDIR /teamspace/studios/this_studio/vto_run_clothes/clothes_virtual_tryon/IDM-VTON
 
-# Expose port 8000 for Gradio
-EXPOSE 8000
+# Expose port 80 for Nginx
+EXPOSE 80
 
 # Start Nginx and the Gradio demo
-CMD service nginx start && exec python3 gradio_demo/app.py
+CMD service nginx start && python3 gradio_demo/app.py
