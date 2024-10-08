@@ -1,32 +1,23 @@
-# Start with a base Ubuntu 22.04 image
-FROM ubuntu:22.04
+# Start with a slim Python 3.10 image
+FROM python:3.10-slim
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    SHELL=/bin/bash \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    SHELL=/bin/bash
 
 WORKDIR /teamspace/studios/this_studio/vto_run_clothes
 
-# Set up system and install dependencies, including Python 3.10
+# Set up system and install dependencies
 RUN apt-get update --yes && \
-    apt-get upgrade --yes && \
     apt-get install --yes --no-install-recommends \
-        git wget curl bash libgl1 software-properties-common \
-        openssh-server nginx libgl1-mesa-glx libglib2.0-0 \
-        git-lfs build-essential gnupg && \
-    add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get install --yes python3.10 python3.10-dev python3.10-venv python3-pip && \
+        git wget curl libgl1 libglib2.0-0 git-lfs build-essential \
+        gnupg2 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 
-
-# Set Python 3.10 as the default
-RUN if [ ! -e /usr/bin/python ]; then ln -s /usr/bin/python3.10 /usr/bin/python; fi && \
-    if [ ! -e /usr/bin/python3 ]; then ln -s /usr/bin/python3.10 /usr/bin/python3; fi
-
 # Clone the repository
-RUN git clone --branch main --depth 1 https://github.com/AI-ML-Team-FS/clothes_virtual_tryon.git /teamspace/studios/this_studio/vto_run_clothes/clothes_virtual_tryon
+RUN git clone --branch main --depth 1 https://github.com/AI-ML-Team-FS/clothes_virtual_tryon.git 
 
 WORKDIR /teamspace/studios/this_studio/vto_run_clothes/clothes_virtual_tryon
 
