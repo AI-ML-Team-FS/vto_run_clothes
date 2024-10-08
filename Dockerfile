@@ -9,9 +9,14 @@ WORKDIR /teamspace/studios/this_studio/vto_run_clothes
 
 # Set up system and install dependencies
 RUN apt-get update --yes && \
+    apt-get upgrade --yes && \
     apt-get install --yes --no-install-recommends \
-        git wget curl libgl1 libglib2.0-0 git-lfs build-essential \
-        gnupg2 && \
+    git wget curl bash libgl1 software-properties-common openssh-server nginx \
+    libgl1-mesa-glx libglib2.0-0 git-lfs \
+    build-essential libssl-dev zlib1g-dev \
+    libbz2-dev libreadline-dev libsqlite3-dev \
+    libncursesw5-dev xz-utils tk-dev libxml2-dev \
+    libxmlsec1-dev libffi-dev liblzma-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
@@ -46,7 +51,7 @@ COPY start.sh /teamspace/studios/this_studio/vto_run_clothes/start.sh
 RUN chmod +x /teamspace/studios/this_studio/vto_run_clothes/start.sh
 
 # Check for NVIDIA drivers for GPU support
-RUN if [ -x "$(command -v nvidia-smi)" ]; then echo "NVIDIA GPU detected"; else echo "No NVIDIA GPU detected, switching to CPU-only mode"; fi
+RUN /bin/bash -c 'if [ -x "$(command -v nvidia-smi)" ]; then echo "NVIDIA GPU detected"; else echo "No NVIDIA GPU detected, switching to CPU-only mode"; fi'
 
 # Expose necessary ports
 EXPOSE 80 22 8888
