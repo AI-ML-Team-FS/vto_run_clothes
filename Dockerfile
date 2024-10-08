@@ -1,31 +1,40 @@
-FROM python:3.10-slim
+# Start with a base Ubuntu 22.04 image
+FROM ubuntu:22.04
 
-# Set the working directory
+ENV DEBIAN_FRONTEND=noninteractive \
+    SHELL=/bin/bash \
+    PYTHONUNBUFFERED=1
+
 WORKDIR /teamspace/studios/this_studio/vto_run_clothes
 
-# Copy runpod.yaml and nginx.conf
-COPY runpod.yaml /teamspace/studios/this_studio/vto_run_clothes/runpod.yaml
-COPY nginx.conf /teamspace/studios/this_studio/vto_run_clothes/nginx.conf
+# Set up system and install dependencies, including Python 3.10
+RUN apt-get update --yes && \
+    apt-get upgrade --yes && \
+    apt-get install --yes --no-install-recommends \
+        git wget curl bash libgl1 software-properties-common \
+        openssh-server nginx libgl1-mesa-glx libglib2.0-0 \
+        git-lfs build-essential gnupg && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get install --yes python3.10 python3.10-dev python3.10-venv python3-pip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 
-# Install required packages, including nginx and openssh-server
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends wget git git-lfs nginx openssh-server libgl1-mesa-glx libglib2.0-0 && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Configure git
-RUN git config --global http.postBuffer 1048576000
+# Set Python 3.10 as the default
+RUN if [ ! -e /usr/bin/python ]; then ln -s /usr/bin/python3.10 /usr/bin/python; fi && \
+    if [ ! -e /usr/bin/python3 ]; then ln -s /usr/bin/python3.10 /usr/bin/python3; fi
 
 # Clone the repository
-RUN git clone --branch main --depth 1 https://github.com/AI-ML-Team-FS/clothes_virtual_tryon.git
+RUN git clone --branch main --depth 1 https://github.com/AI-ML-Team-FS/clothes_virtual_tryon.git /teamspace/studios/this_studio/vto_run_clothes/clothes_virtual_tryon
 
-# Set the working directory to the cloned repository
 WORKDIR /teamspace/studios/this_studio/vto_run_clothes/clothes_virtual_tryon
 
-# Install Python dependencies from the cloned repository's requirements.txt
+# Install Python dependencies
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Download models for DensePose, Human Parsing, and OpenPose
+# Download models
 RUN mkdir -p IDM-VTON/ckpt/densepose IDM-VTON/ckpt/humanparsing IDM-VTON/ckpt/openpose/ckpts && \
     wget -P IDM-VTON/ckpt/densepose/ https://huggingface.co/yisol/IDM-VTON/resolve/main/densepose/model_final_162be9.pkl && \
     wget -P IDM-VTON/ckpt/humanparsing/ https://huggingface.co/levihsu/OOTDiffusion/resolve/main/checkpoints/humanparsing/parsing_atr.onnx && \
@@ -38,11 +47,18 @@ RUN git lfs install && \
     cd IDM-VTON/yisol && \
     git clone https://huggingface.co/yisol/IDM-VTON
 
-# Change working directory to the IDM-VTON folder to run the Gradio demo
 WORKDIR /teamspace/studios/this_studio/vto_run_clothes/clothes_virtual_tryon/IDM-VTON
 
-# Expose port 80 for Nginx
-EXPOSE 80
+# Copy configuration files
+COPY nginx.conf /teamspace/studios/this_studio/vto_run_clothes/nginx.conf
+COPY start.sh /teamspace/studios/this_studio/vto_run_clothes/start.sh
+RUN chmod +x /teamspace/studios/this_studio/vto_run_clothes/start.sh
 
-# Start Nginx and the Gradio demo
-CMD service nginx start && python3 gradio_demo/app.py
+# Check for NVIDIA drivers for GPU support
+RUN if [ -x "$(command -v nvidia-smi)" ]; then echo "NVIDIA GPU detected"; else echo "No NVIDIA GPU detected, switching to CPU-only mode"; fi
+
+# Expose necessary ports
+EXPOSE 80 22 8888
+
+# Set default command to start your application
+CMD ["/teamspace/studios/this_studio/vto_run_clothes/start.sh"]
